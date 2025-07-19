@@ -162,20 +162,20 @@ router.get('/tripHistory/:userId', async (req, res) => {
 
 // Endpoint to fetch a single trip by tripId
 router.get('/trip/:tripId', async (req, res) => {
-  const tripId = req.params.tripId;
+    const tripId = req.params.tripId;
 
-  try {
-    const [rows] = await pool.query('SELECT * FROM trips WHERE id = ?', [tripId]);
+    try {
+        const [rows] = await pool.query('SELECT * FROM trips WHERE id = ?', [tripId]);
 
-    if (rows.length === 0) {
-      return res.status(404).json({ message: 'Trip not found' });
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Trip not found' });
+        }
+
+        res.json(rows[0]); // return the first (and only) trip
+    } catch (error) {
+        console.error('Error fetching trip by ID:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
-
-    res.json(rows[0]); // return the first (and only) trip
-  } catch (error) {
-    console.error('Error fetching trip by ID:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
 });
 
 // Endpoint to update real-time location in Firestore
@@ -345,6 +345,8 @@ router.put('/trips/:tripId/status', async (req, res) => {
             sql = `UPDATE trips SET statuses = ?, cancellation_reason = ?, cancel_by = ? WHERE id = ?`;
             params = [status, cancellation_reason, cancel_by, tripId];
 
+        } else if (status === 'no-response') {
+            sql = `UPDATE trips SET statuses = ? WHERE id = ?`;
         } else {
             return res.status(400).json({ message: 'Invalid status' });
         }
