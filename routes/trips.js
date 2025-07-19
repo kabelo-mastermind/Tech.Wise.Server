@@ -347,6 +347,7 @@ router.put('/trips/:tripId/status', async (req, res) => {
 
         } else if (status === 'no-response') {
             sql = `UPDATE trips SET statuses = ? WHERE id = ?`;
+            params = [status, cancellation_reason, cancel_by, tripId];
         } else {
             return res.status(400).json({ message: 'Invalid status' });
         }
