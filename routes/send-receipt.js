@@ -38,7 +38,7 @@ router.post('/send-receipt', async (req, res) => {
                 padding:40px 28px 32px 28px;
             ">
             <div style="text-align:center; margin-bottom:28px;">
-                <img src="https://yourdomain.com/logo.png" alt="Nthome Logo" style="width:60px; border-radius:12px; box-shadow:0 1px 6px rgba(4,167,130,.12);" />
+                <img src="https://firebasestorage.googleapis.com/v0/b/voice-recording-app-2ed9b.appspot.com/o/profile_pictures%2FBobo_18%2F026006a4-65cc-4ffb-b283-b7c98eb17f31.png?alt=media&token=b24b7460-c04b-42e7-91a6-328d55121f00" alt="Nthome Logo" style="width:60px; border-radius:12px; box-shadow:0 1px 6px rgba(4,167,130,.12);" />
                 <h2 style="color:#04a782; font-weight:700; font-size:28px;margin:20px 0 10px;">Hi ${name || 'Rider'},</h2>
             </div>
             <p style="font-size:18px; line-height:1.5; color:#222; margin:0 0 20px;">
