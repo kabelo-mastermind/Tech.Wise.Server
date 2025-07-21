@@ -292,7 +292,6 @@ router.get('/driverTrips', async (req, res) => {
     }
 });
 
-
 // Endpoint to update the trip status
 router.put('/trips/:tripId/status', async (req, res) => {
     const { tripId } = req.params;
@@ -373,7 +372,6 @@ router.put('/trips/:tripId/status', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
-
 
 
 // Endpoint to fetch the latest trip status for a specific user
@@ -516,8 +514,6 @@ router.put('/updateDriverState', async (req, res) => {
     }
 });
 
-
-// new==========
 // Update driver state with check
 router.put('/driver/updateStatus', async (req, res) => {
     const { userId, state } = req.body;
@@ -588,7 +584,6 @@ router.post('/driver/startSession', async (req, res) => {
         res.status(500).json({ error: 'Failed to start session.' });
     }
 });
-
 
 // Endpoint to fetch total_seconds by user_id for today (sum of all sessions)
 router.get('/driver/totalWorkedToday/:user_id', async (req, res) => {
@@ -664,7 +659,6 @@ router.put('/endDriverSession', async (req, res) => {
     }
 });
 
-
 // Get driver state and online_time
 router.get('/getDriverState', async (req, res) => {
     const userId = req.query.userId;
@@ -698,8 +692,6 @@ router.get('/getDriverState', async (req, res) => {
         return res.status(500).json({ message: 'Failed to fetch driver state', error: err.message });
     }
 });
-
-
 
 // Route to get Driver Trips based on status
 router.get('/getDriverTrips', async (req, res) => {
@@ -832,13 +824,5 @@ router.post('/quote', async (req, res) => {
         res.status(500).json({ error: "Database error" });
     }
 });
-
-
-
-
-
-
-
-
 
 module.exports = router;
