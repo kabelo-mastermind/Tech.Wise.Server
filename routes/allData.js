@@ -109,7 +109,7 @@ router.get('/drivers', async (req, res) => {
   `;
   try {
     const [rows] = await pool.query(query);
-    res.json(rows);
+    res.json({ message: "data retrieved", rows });
   } catch (error) {
     console.error("Error fetching drivers:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -157,6 +157,22 @@ router.put('/drivers/:userId', async (req, res) => {
     state
     // Do NOT include profile_picture or document fields here!
   } = req.body;
+  // check if user exists
+  const userQuery = `
+    SELECT id, name, lastName
+    FROM users
+    WHERE id = ?
+  `;
+
+  try {
+    const [rows] = await pool.query(userQuery, [userId]);
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "User doesn't exist" });
+    }
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 
   // Update users table
   const userUpdateQuery = `
@@ -192,7 +208,10 @@ router.put('/drivers/:userId', async (req, res) => {
       userId
     ]);
 
+
     res.json({ message: "Driver updated successfully" });
+
+
   } catch (error) {
     console.error("Error updating driver by userId:", error);
     res.status(500).json({ message: "Internal server error" });

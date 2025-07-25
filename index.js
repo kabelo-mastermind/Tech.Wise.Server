@@ -13,7 +13,7 @@ const helicopter = require('./routes/helicopter')
 const allData = require('./routes/allData')
 const feedback = require('./routes/feedback')
 const receiptRoute = require('./routes/send-receipt'); // adjust path if needed
-
+require('dotenv').config();
 
 const cors = require('cors');
 const path = require('path');

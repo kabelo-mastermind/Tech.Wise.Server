@@ -19,7 +19,7 @@
     "connect-redis": "^7.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.6.1",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "firebase-admin": "^13.0.2",

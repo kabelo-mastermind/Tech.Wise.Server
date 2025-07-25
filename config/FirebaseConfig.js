@@ -1,5 +1,6 @@
 // config/firebase.js
 const admin = require('firebase-admin');
+require("dotenv").config();
 
 // Load the Firebase service account key
 const serviceAccount = {
