@@ -115,8 +115,23 @@ router.get('/drivers', async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+//GET /api/customers
+router.get('/customers', async (req,res) => {
+  const query =`
+   SELECT
+   name, lastname, email, phoneNumber, current_address, role
+   FROM users 
+   WHERE role = 'customer'`;
+   try {
+    const [rows] = await pool.query(query);
+    res.json({ message: "customers retrieved", rows });
+  } catch (error) {
+    console.error("Error fetching Custmers:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+})
 
-// GET /api/drivers/:userId
+// GET /api/driver/:userId
 router.get('/drivers/:userId', async (req, res) => {
   const { userId } = req.params;
 
