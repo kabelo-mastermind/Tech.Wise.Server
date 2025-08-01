@@ -6,7 +6,6 @@ const firestoreDb = require('../config/FirebaseConfig').db;
 // POST endpoint to create a new trip
 router.post('/trips', async (req, res) => {
     console.log('Request Body:', req.body);
-
     const {
         customerId,
         driverId,
