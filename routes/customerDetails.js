@@ -41,36 +41,36 @@ router.get('/customer', async (req, res) => {
     }
 });
 router.get('/customer/:id', async (req, res) => {
-  const { id } = req.params;
-  console.log(`🚀 Fetching details for customer ID: ${id}`);  // ✅ backticks
+    const { id } = req.params;
+    console.log(`🚀 Fetching details for customer ID: ${id}`);  // ✅ backticks
 
-  if (!id) {
-    return res.status(400).json({ message: 'Customer ID is required' });
-  }
-
-  const query = "SELECT * FROM users WHERE id = ?";
-
-  try {
-    const startTime = Date.now();
-    const [rows] = await pool.query(query, [id]);
-    console.log(`⏱️ Query executed in ${Date.now() - startTime} ms`);  // ✅ backticks
-
-    if (rows.length > 0) {
-      console.log("✅ User found:", rows[0]);
-      res.status(200).json(rows[0]);
-    } else {
-      console.log("⚠️ No results found");
-      return res.status(404).json({ message: "User not found" });
+    if (!id) {
+        return res.status(400).json({ message: 'Customer ID is required' });
     }
-  } catch (error) {
-    console.error("❌ Error executing query:", error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+
+    const query = "SELECT * FROM users WHERE id = ?";
+
+    try {
+        const startTime = Date.now();
+        const [rows] = await pool.query(query, [id]);
+        console.log(`⏱️ Query executed in ${Date.now() - startTime} ms`);  // ✅ backticks
+
+        if (rows.length > 0) {
+            console.log("✅ User found:", rows[0]);
+            res.status(200).json(rows[0]);
+        } else {
+            console.log("⚠️ No results found");
+            return res.status(404).json({ message: "User not found" });
+        }
+    } catch (error) {
+        console.error("❌ Error executing query:", error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 
 
-// Endpoint to update customer data
+// Endpoint to update customer profile picture data
 router.post('/update-profile-picture', async (req, res) => {
     const { profile_picture, user_id } = req.body;
     console.log(`🚀 Updating profile picture for user ID: ${profile_picture}`);  // Confirm this is printed
@@ -128,7 +128,34 @@ router.put('/update-customer', async (req, res) => {
         console.error("❌ Error updating customer details:", error);
         return res.status(500).json({ message: 'Internal server error' });
     }
-});
 
+
+});
+//end point delete customer
+router.delete('/delete-customer/:id', async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ message: 'Customer ID is required' });
+    }
+
+    try {
+        const [existingUser] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
+
+        if (existingUser.length === 0) {
+            return res.status(404).json({ message: "User doesn't exist" });
+        }
+
+        const [result] = await pool.query('DELETE FROM users WHERE id = ?', [id]);
+
+        return res.status(200).json({ message: 'User successfully deleted' });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+router.get('/test-delete-customer-route', (req, res) => {
+  res.json({ message: "Delete customer route file is working!" });
+});
 
 module.exports = router;

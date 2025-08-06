@@ -5,6 +5,10 @@ require("dotenv").config();
 
 // Endpoint to register a new user
 router.post('/register', async (req, res) => {
+    console.log('RAW req.body:', req.body);
+
+    const { name, email, role, user_uid } = req.body;
+    console.log('Parsed fields:', { name, email, role, user_uid });
     console.log('Received request:', req.body);
 
     let connection;
@@ -12,8 +16,9 @@ router.post('/register', async (req, res) => {
     try {
         const { name, email, role, user_uid } = req.body;
 
-        if (!name || !email || !role || !user_uid) {
-            return res.status(400).json({ message: "All fields are required" });
+        // Basic validation
+        if ([name, email, role, user_uid].some(field => field === undefined || field === null || field === '')) {
+            return res.status(400).json({ message: "All fields are required and must not be empty." });
         }
 
         connection = await pool.getConnection();
@@ -22,7 +27,7 @@ router.post('/register', async (req, res) => {
         const [existingUser] = await connection.execute('SELECT * FROM users WHERE email = ?', [email]);
 
         if (existingUser.length > 0) {
-            return res.status(409).json({ message: 'Email already exists' }); // 409 = Conflict
+            return res.status(409).json({ message: 'Email already exists' });
         }
 
         // Insert new user
@@ -34,9 +39,10 @@ router.post('/register', async (req, res) => {
         console.error('Database error:', error);
         res.status(500).json({ message: 'Error registering user', error: error.message });
     } finally {
-        if (connection) connection.release(); // Always release the connection
+        if (connection) connection.release();
     }
 });
+
 
 // Endpoint to check if email exists
 router.post('/check-email', async (req, res) => {
