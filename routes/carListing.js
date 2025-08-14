@@ -159,7 +159,22 @@ router.get('/car_listing/user/:user_id', async (req, res) => {
     }
 });
 
+router.get('/all_car_listing', async (req, res) => {
+    
+const query = `
+    SELECT * FROM car_listing;
+  `;
 
+  try {
+    const [rows] = await pool.query(query);
+    res.json({ message: " vehicles retrieved sucessfully ", rows });
+    
+  } catch (error) {
+    console.error("Error fetching all vehices :", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+    
+});
 // Delete Car Listing by Car ID
 router.delete('/car_listing/:car_id', async (req, res) => {
   const { car_id } = req.params;

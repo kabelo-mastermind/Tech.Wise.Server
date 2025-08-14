@@ -121,7 +121,7 @@ router.get('/customers', async (req, res) => {
 
   let query = `
     SELECT
-       id, name, lastname, email, phoneNumber, current_address, role
+       id, name, lastname, email, phoneNumber, current_address, role, profile_picture
     FROM users
     WHERE role = 'customer'`;
 
