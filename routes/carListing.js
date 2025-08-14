@@ -66,6 +66,9 @@ router.post("/car_listing", async (req, res) => {
 router.put("/car_listing/:car_id", async (req, res) => {
   try {
     const { car_id } = req.params;
+    if (!car_id) return res.status(400).json({ error: "Car ID is required." });
+
+   
     const {
       userId,
       car_make,
@@ -75,64 +78,41 @@ router.put("/car_listing/:car_id", async (req, res) => {
       car_colour,
       license_plate,
       car_image,
-      class: carClass, // optional
+      class: carClass,
     } = req.body;
 
-    if (!car_id) {
-      return res.status(400).json({ error: "Car ID is required." });
+    
+    const fields = [];
+    const values = [];
+
+    if (userId !== undefined) { fields.push("userId = ?"); values.push(userId); }
+    if (car_make) { fields.push("car_make = ?"); values.push(car_make); }
+    if (car_model) { fields.push("car_model = ?"); values.push(car_model); }
+    if (car_year !== undefined) { fields.push("car_year = ?"); values.push(car_year); }
+    if (number_of_seats !== undefined) { fields.push("number_of_seats = ?"); values.push(number_of_seats); }
+    if (car_colour) { fields.push("car_colour = ?"); values.push(car_colour); }
+    if (license_plate) { fields.push("license_plate = ?"); values.push(license_plate); }
+    if (car_image) { fields.push("car_image = ?"); values.push(car_image); }
+    if (carClass !== undefined) { fields.push("`class` = ?"); values.push(carClass); }
+
+    if (fields.length === 0) {
+      return res.status(400).json({ error: "No fields provided to update." });
     }
 
-    const missingFields = [];
-    if (!userId) missingFields.push("userId");
-    if (!car_make) missingFields.push("car_make");
-    if (!car_model) missingFields.push("car_model");
-    if (!car_year) missingFields.push("car_year");
-    if (!number_of_seats) missingFields.push("number_of_seats");
-    if (!car_colour) missingFields.push("car_colour");
-    if (!license_plate) missingFields.push("license_plate");
-    if (!car_image) missingFields.push("car_image");
+    values.push(car_id); 
+    const updateQuery = `UPDATE car_listing SET ${fields.join(", ")} WHERE id = ?`;
 
-    if (missingFields.length > 0) {
-      return res.status(400).json({
-        error: "Missing required fields",
-        missing: missingFields,
-      });
-    }
-
-    let updateQuery, updateData;
-    if (carClass !== undefined) {
-      updateQuery = `
-        UPDATE car_listing
-        SET userId = ?, car_make = ?, car_model = ?, car_year = ?, number_of_seats = ?, car_colour = ?, license_plate = ?, car_image = ?, \`class\` = ?
-        WHERE id = ?
-      `;
-      updateData = [
-        userId, car_make, car_model, car_year, number_of_seats,
-        car_colour, license_plate, car_image, carClass, car_id,
-      ];
-    } else {
-      updateQuery = `
-        UPDATE car_listing
-        SET userId = ?, car_make = ?, car_model = ?, car_year = ?, number_of_seats = ?, car_colour = ?, license_plate = ?, car_image = ?
-        WHERE id = ?
-      `;
-      updateData = [
-        userId, car_make, car_model, car_year, number_of_seats,
-        car_colour, license_plate, car_image, car_id,
-      ];
-    }
-
-    const [result] = await pool.query(updateQuery, updateData);
+    const [result] = await pool.query(updateQuery, values);
 
     if (result.affectedRows > 0) {
-      res.status(200).json({ message: "Car listing updated successfully." });
+      return res.status(200).json({ message: "Car listing updated successfully." });
     } else {
-      res.status(404).json({ error: `Car listing not found for ID ${car_id}` });
+      return res.status(404).json({ error: `Car listing not found for ID ${car_id}` });
     }
 
   } catch (error) {
     console.error("❌ Update error:", error);
-    res.status(500).json({ error: "Failed to update car listing." });
+    return res.status(500).json({ error: "Failed to update car listing." });
   }
 });
 
@@ -158,7 +138,7 @@ router.get('/car_listing/user/:user_id', async (req, res) => {
         res.status(500).json({ error: "Failed to fetch car details." });
     }
 });
-
+//get all car listing
 router.get('/all_car_listing', async (req, res) => {
     
 const query = `
