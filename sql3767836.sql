@@ -723,6 +723,13 @@ ALTER TABLE `wallets`
 ALTER TABLE `withdrawals`
   ADD CONSTRAINT `withdrawals_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
+--
+-- Constraints for table `users`
+--
+ALTER TABLE users
+ADD COLUMN last_login DATETIME DEFAULT NULL;
+
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

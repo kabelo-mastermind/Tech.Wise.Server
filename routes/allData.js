@@ -121,7 +121,11 @@ router.get('/customers', async (req, res) => {
 
   let query = `
     SELECT
-       id, name, lastname, email, phoneNumber, current_address, role, profile_picture
+       id, name, lastname, email, phoneNumber, current_address, role, profile_picture,
+       CASE
+         WHEN TIMESTAMPDIFF(DAY, last_login, NOW()) <= 7 THEN 'active'
+         ELSE 'inactive'
+       END AS status
     FROM users
     WHERE role = 'customer'`;
 
@@ -245,5 +249,24 @@ router.put('/drivers/:userId', async (req, res) => {
   }
 });
 
+//get vehicle
+router.get('/get-all-vehicles', async (req, res) => {
+  
+
+  let query = `
+    SELECT
+      *
+    FROM vehicle
+   `;
+
+ 
+  try {
+    const [rows] = await pool.query(query);
+    res.json({ message: "vehicles retrieved", rows });
+  } catch (error) {
+    console.error("Error fetching vehicles", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 module.exports = router;

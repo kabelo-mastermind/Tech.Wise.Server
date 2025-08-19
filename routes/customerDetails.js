@@ -94,7 +94,6 @@ router.post('/update-profile-picture', async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 });
-// Endpoint to update customer data
 router.put('/update-customer', async (req, res) => {
     const { customer_code, user_id, ...fieldsToUpdate } = req.body;
 
@@ -105,10 +104,13 @@ router.put('/update-customer', async (req, res) => {
     }
 
     try {
-        // ✅ Add customer_code to fieldsToUpdate if provided
+        // Add customer_code to fieldsToUpdate if provided
         if (customer_code) {
             fieldsToUpdate.customer_code = customer_code;
         }
+
+        // Always update last_login
+        fieldsToUpdate.last_login = new Date(); // Or you can use MySQL NOW() directly in query
 
         // Build SET clause dynamically
         const setClauses = Object.keys(fieldsToUpdate).map(field => `${field} = ?`).join(', ');
@@ -128,9 +130,8 @@ router.put('/update-customer', async (req, res) => {
         console.error("❌ Error updating customer details:", error);
         return res.status(500).json({ message: 'Internal server error' });
     }
-
-
 });
+
 //end point delete customer
 router.delete('/delete-customer/:id', async (req, res) => {
     const { id } = req.params;
