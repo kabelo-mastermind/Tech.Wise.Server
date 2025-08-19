@@ -380,7 +380,8 @@ CREATE TABLE `users` (
   `current_address` varchar(255) DEFAULT NULL,
   `gender` enum('male','female') NOT NULL,
   `profile_picture` varchar(255) DEFAULT NULL,
-  `user_uid` varchar(255) NOT NULL
+  `user_uid` varchar(255) NOT NULL ,
+  `last_login` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --

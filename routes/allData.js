@@ -121,9 +121,9 @@ router.get('/customers', async (req, res) => {
 
   let query = `
     SELECT
-       id, name, lastname, email, phoneNumber, current_address, role, profile_picture,
+       id, name, lastName, email, phoneNumber, current_address, role, profile_picture,
        CASE
-         WHEN TIMESTAMPDIFF(DAY, last_login, NOW()) <= 7 THEN 'active'
+         WHEN last_login IS NOT NULL AND TIMESTAMPDIFF(DAY, last_login, NOW()) <= 7 THEN 'active'
          ELSE 'inactive'
        END AS status
     FROM users
@@ -132,7 +132,7 @@ router.get('/customers', async (req, res) => {
   const params = [];
 
   if (search) {
-    query += ` AND (name LIKE ? OR lastname LIKE ? OR email LIKE ?)`;
+    query += ` AND (name LIKE ? OR lastName LIKE ? OR email LIKE ?)`;
     const searchParam = `%${search}%`;
     params.push(searchParam, searchParam, searchParam);
   }
@@ -141,7 +141,7 @@ router.get('/customers', async (req, res) => {
     const [rows] = await pool.query(query, params);
     res.json({ message: "customers retrieved", rows });
   } catch (error) {
-    console.error("Error fetching customers:", error);
+    console.error("Error fetching customers:", error.sqlMessage || error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
